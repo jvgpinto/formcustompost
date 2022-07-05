@@ -14,6 +14,12 @@
  * Update URI:        https://github.com/jvgpinto/formcustompost
  */
 
+//Security
+if(!defined('ABSPATH')){
+    echo 'Nothing to do when you call me directly';
+    die;
+}
+
  //Support functions
 include('functions/tools.php');
 
@@ -25,3 +31,5 @@ add_action( 'admin_init', 'Create_Custom_Fields');
 include('functions/CTP.php');
 add_action( 'init', 'create_custompost_ctp', 0 );
 
+include('functions/form.php');
+add_shortcode( 'formcustompost', 'custompost_frontend_post' );

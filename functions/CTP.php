@@ -64,3 +64,24 @@ function rewrite_custompost_flush(){
     flush_rewrite_rules();
 }
 register_activation_hook( '__FILE__', 'rewrite_custompost_flush' );
+
+function get_all_custompost()
+{
+    $args = array(  
+        'post_type' => 'custompost',
+        'post_status' => 'publish',
+        'posts_per_page' => -1, 
+        'orderby' => 'title', 
+        'order' => 'ASC',
+    );
+
+    $loop = new WP_Query( $args ); 
+        
+    while ( $loop->have_posts() ) : $loop->the_post(); 
+        $featured_img = wp_get_attachment_image_src( $post->ID );
+        print the_title();
+        the_excerpt(); 
+    endwhile;
+
+    wp_reset_postdata(); 
+}
