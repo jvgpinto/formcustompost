@@ -30,6 +30,9 @@ add_action( 'admin_init', 'Create_Custom_Fields');
  //Custom type
 include('functions/CTP.php');
 add_action( 'init', 'create_custompost_ctp', 0 );
+add_shortcode( 'allformcustompost', 'get_all_custompost' );
 
 include('functions/form.php');
 add_shortcode( 'formcustompost', 'custompost_frontend_post' );
+
+include('functions/settings.php');

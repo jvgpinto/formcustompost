@@ -76,12 +76,15 @@ function get_all_custompost()
     );
 
     $loop = new WP_Query( $args ); 
-        
+    $html = '<ul class="custompost-ul">';    
     while ( $loop->have_posts() ) : $loop->the_post(); 
         $featured_img = wp_get_attachment_image_src( $post->ID );
-        print the_title();
+        $permalink = get_permalink($post);
+        $html .= '<li class=custompost-li><a href="'.$permalink.'"'.print the_title().'</a></li>';
         the_excerpt(); 
     endwhile;
+    $html .= '</ul>';
 
     wp_reset_postdata(); 
+    return $html;
 }

@@ -4,21 +4,22 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
 
 	function custompost_post_if_submitted() {
         // Stop running function if form wasn't submitted
-        console_log('Variable $_POST');
-        console_log($_POST);
         if ( empty($_POST) ) {
             return;
         }
 
         //Add category with the first letter if not exists
         $catName = strtoupper(substr($_POST['name_custompost'],0,1));
-        $textBase  = "En hommage à nos êtres chers disparus, la Fondation de l’Hôpital Marie-Clarac a créé une murale À la mémoire des anges de nos cœurs installée au 3e étage des Soins palliatifs.";
-        $textBase .= "On y retrouve les noms de personnes en mémoire desquelles des dons cumulés de 1 000 $ et plus ont été versés à la Fondation pour perpétuer l’excellence des soins. Les dons peuvent être effectués ";
-        $textBase .= "par plusieurs donateurs sur plus d’une année.";
+        $title = str_replace('{0}',$_POST['name_custompost'],get_option('custompost_field_title'));
+        $content = esc_html__(get_option('custompost_field_content'));
+        if ( shortcode_exists( 'custompost_field_shortcode_end' ) ) {
+            $content .= do_shortcode('['.get_option('custompost_field_shortcode_end').']');
+        }
         $id_category_created = wp_create_category($catName);
         // Add the content of the form to $post as an array
         $post = array(
-            'post_title'    => $_POST['name_custompost'],
+            'post_title'    => $title,
+            'post_content'  => $content,
             'post_category' => array($id_category_created), 
             'tags_input'    => $_POST['nom_defunt'],
             'post_status'   => 'draft',
@@ -61,7 +62,7 @@ endif;
 
 //Creation of email html 
 function email_create($post){
-    $adminEmail = get_option( 'admin_email' );
+    $adminEmail = get_option( 'custompost_field_approver_email' );
     $subject = esc_html__("Contenu en attends de l'approbation");;
     $urlPost = get_edit_post_link($post_id);
     $body = esc_html__('Voici les informations soumis: <br>'.json_encode( $post ).'<br><br> <a href="'.$urlPost.'" target="_blank">Approuver</a>');
