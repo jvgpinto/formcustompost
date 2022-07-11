@@ -21,7 +21,7 @@ function custompost_settings_init() {
     add_settings_field(
         'custompost_field_title', // As of WP 4.6 this value is used only internally.
                                 // Use $args' label_for to populate the id inside the callback.
-            __( 'Text default for post title', 'custompost' ),
+            __( 'Text default title sufix', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
         'custompost_section_general',
@@ -30,7 +30,7 @@ function custompost_settings_init() {
             'class'             => 'custompost_row',
             'custompost_custom_data' => '',
             'type'              => 'input',
-            'description'       => esc_attr( 'The {0} will be replaced for the title submitted on the form.' )
+            'description'       => esc_attr( 'This will be inserted before the title' )
         )
     );
     add_settings_field(
@@ -44,7 +44,7 @@ function custompost_settings_init() {
             'label_for'         => 'custompost_field_content',
             'class'             => 'custompost_row',
             'custompost_custom_data' => '',
-            'type'              => 'textarea',
+            'type'              => 'richtext',
             'description'       => esc_attr( 'The content of the custom post will be replaced to this text.' )
         )
     );
@@ -106,13 +106,11 @@ function custompost_section_general_callback( $args ) {
  
 function custompost_field_html_generate( $args ) {
     // Get the value of the setting we've registered with register_setting()
-    console_log($args['label_for']);
+    //console_log($args['label_for']);
     $value = get_option( $args['label_for']);
-    console_log($value);
-    $all_options = wp_load_alloptions();
-    console_log($all_options);
     //console_log($value);
-    //console_log($args);
+    $all_options = wp_load_alloptions();
+    //console_log($all_options);
     switch ($args['type']) {
         case "input":
             ?>
@@ -142,7 +140,20 @@ function custompost_field_html_generate( $args ) {
                 </p>
             <?php
             break;
-       
+       case "richtext":
+            ?>
+               <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
+                    <?php
+                        $settings = array();
+                        wp_editor( $value, $args['label_for'], $settings );
+                    ?>
+
+                </label>
+                <p class="description">
+                    <?php echo $args['description'] ?>
+                </p>
+            <?php
+            break;
         default:
             ?>
                 <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
@@ -155,7 +166,7 @@ function custompost_field_html_generate( $args ) {
                     <?php echo $args['description'] ?>
                 </p>
             <?php
-            break;
+        break;
     }
 }
  
@@ -163,14 +174,30 @@ function custompost_field_html_generate( $args ) {
  * Add the top level menu page.
  */
 function custompost_options_page() {
-    add_menu_page(
-        'Custom post plugin settings',
-        'Custom post Options',
+    // add_menu_page(
+    //     'Custom post plugin settings',
+    //     'Custom post Options',
+    //     'manage_options',
+    //     'custompost',
+    //     'custompost_options_page_html',
+    //     '',
+    //     5
+    // );
+    // add_submenu_page( 
+    // 'custompost',//$parent_slug:string, 
+    // 'Custom post plugin settings',//$page_title:string, 
+    // 'Settings',//$menu_title:string, 
+    // 'manage_options',//$capability:string, 
+    // 'custompost',//$menu_slug:string,
+    // 'custompost_options_page_html',// $function:callable, 
+    // 10 );
+    add_submenu_page(
+        'edit.php?post_type=custompost',
+        __( 'Custom post plugin settings', 'custompost' ),
+        __( 'Settings', 'custompost' ),
         'manage_options',
         'custompost',
-        'custompost_options_page_html',
-        '',
-        5
+        'custompost_options_page_html'
     );
 }
  
@@ -189,14 +216,16 @@ function custompost_options_page_html() {
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
- 
-    // add error/update messages
- 
     // check if the user have submitted the settings
     // WordPress will add the "settings-updated" $_GET parameter to the url
     if ( isset( $_GET['settings-updated'] ) ) {
         // add settings saved message with the class of "updated"
         add_settings_error( 'custompost_messages', 'custompost_message', __( 'Settings Saved', 'custompost' ), 'updated' );
+    }
+    if(isset($_POST['custompost_field_content'])  ){
+        $htmlContent= htmlentities(wpautop($_POST['custompost_field_content']));
+        console_log($htmlContent);
+        $fff= update_option('custompost_field_content', $htmlContent);
     }
  
     // show error/update messages

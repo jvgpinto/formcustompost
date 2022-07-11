@@ -10,7 +10,7 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
 
         //Add category with the first letter if not exists
         $catName = strtoupper(substr($_POST['name_custompost'],0,1));
-        $title = str_replace('{0}',$_POST['name_custompost'],get_option('custompost_field_title'));
+        $title = $_POST['name_custompost'];
         $content = esc_html__(get_option('custompost_field_content'));
         if ( shortcode_exists( 'custompost_field_shortcode_end' ) ) {
             $content .= do_shortcode('['.get_option('custompost_field_shortcode_end').']');

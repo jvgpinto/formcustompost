@@ -36,3 +36,8 @@ include('functions/form.php');
 add_shortcode( 'formcustompost', 'custompost_frontend_post' );
 
 include('functions/settings.php');
+
+//Custom filters for title and content.
+include('functions/filters.php');
+add_filter( 'the_title', 'filter_title_custompost');
+add_filter( 'the_content', 'filter_content_custompost');
