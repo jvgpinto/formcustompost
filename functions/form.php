@@ -3,6 +3,9 @@
 if( ! function_exists('custompost_post_if_submitted' ) ):
 
 	function custompost_post_if_submitted() {
+        require_once(ABSPATH . 'wp-config.php'); 
+        require_once(ABSPATH . 'wp-includes/wp-db.php'); 
+        require_once(ABSPATH . 'wp-admin/includes/taxonomy.php'); 
         // Stop running function if form wasn't submitted
         if ( empty($_POST) ) {
             return;
