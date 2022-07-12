@@ -77,15 +77,25 @@ function get_all_custompost()
     );
 
     $loop = new WP_Query( $args ); 
-    $html = '<ul class="custompost-ul">';    
+    $html = '<ul class="custompost-ul">';   
+    $li = ''; 
     while ( $loop->have_posts() ) : $loop->the_post(); 
         $featured_img = wp_get_attachment_image_src( $post->ID );
-        $permalink = get_permalink($post);
-        $html .= '<li class=custompost-li><a href="'.$permalink.'"'.print the_title().'</a></li>';
-        the_excerpt(); 
+        $permalink = esc_attr(esc_url( get_permalink($post)));
+        $li .= '<li class="custompost-li">';
+        $li .=  the_title('<a href="'.$permalink.'">', '</a>', false);
+        $li .= '</li>';
+        // the_excerpt(); 
     endwhile;
     $html .= '</ul>';
 
     wp_reset_postdata(); 
-    return $html;
+    console_log('get_all_custompost');
+    console_log($li);
+    return '
+    <div class="list-all-custompost">
+        <ul class="custompost-ul">
+            '.$li.'
+        </ul>
+    </div>';
 }

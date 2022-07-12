@@ -191,23 +191,6 @@ function custompost_field_html_generate( $args ) {
  * Add the top level menu page.
  */
 function custompost_options_page() {
-    // add_menu_page(
-    //     'Custom post plugin settings',
-    //     'Custom post Options',
-    //     'manage_options',
-    //     'custompost',
-    //     'custompost_options_page_html',
-    //     '',
-    //     5
-    // );
-    // add_submenu_page( 
-    // 'custompost',//$parent_slug:string, 
-    // 'Custom post plugin settings',//$page_title:string, 
-    // 'Settings',//$menu_title:string, 
-    // 'manage_options',//$capability:string, 
-    // 'custompost',//$menu_slug:string,
-    // 'custompost_options_page_html',// $function:callable, 
-    // 10 );
     add_submenu_page(
         'edit.php?post_type=custompost',
         __( 'Custom post plugin settings', 'custompost' ),
