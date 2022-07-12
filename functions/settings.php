@@ -5,6 +5,7 @@
  */
 function custompost_settings_init() {
     // Register a new setting for "custompost" page.
+    register_setting( 'custompost', 'custompost_CTP_name' );
     register_setting( 'custompost', 'custompost_field_title' );
     register_setting( 'custompost', 'custompost_field_content' );
     register_setting( 'custompost', 'custompost_field_shortcode_end' );
@@ -17,6 +18,22 @@ function custompost_settings_init() {
         'custompost'
     );
  
+    // Register a new field in the "custompost_section_general" section, inside the "custompost" page.
+    add_settings_field(
+        'custompost_CTP_name', // As of WP 4.6 this value is used only internally.
+                                // Use $args' label_for to populate the id inside the callback.
+            __( 'The name of the content type', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_general',
+        array(
+            'label_for'         => 'custompost_CTP_name',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'input',
+            'description'       => esc_attr( 'The name will be used on menu' )
+        )
+    );
     // Register a new field in the "custompost_section_general" section, inside the "custompost" page.
     add_settings_field(
         'custompost_field_title', // As of WP 4.6 this value is used only internally.

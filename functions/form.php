@@ -11,7 +11,7 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
         //Add category with the first letter if not exists
         $catName = strtoupper(substr($_POST['name_custompost'],0,1));
         $title = $_POST['name_custompost'];
-        $content = esc_html__(get_option('custompost_field_content'));
+        $content = '';//esc_html__(get_option('custompost_field_content'));
         if ( shortcode_exists( 'custompost_field_shortcode_end' ) ) {
             $content .= do_shortcode('['.get_option('custompost_field_shortcode_end').']');
         }
@@ -19,7 +19,7 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
         // Add the content of the form to $post as an array
         $post = array(
             'post_title'    => $title,
-            'post_content'  => $content,
+            'post_content'  => '',//$content,
             'post_category' => array($id_category_created), 
             'tags_input'    => $_POST['nom_defunt'],
             'post_status'   => 'draft',

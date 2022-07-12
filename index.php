@@ -19,7 +19,6 @@ if(!defined('ABSPATH')){
     echo 'Nothing to do when you call me directly';
     die;
 }
-
  //Support functions
 include('functions/tools.php');
 

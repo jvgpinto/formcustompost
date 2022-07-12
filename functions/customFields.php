@@ -4,9 +4,10 @@
  include('styles.php');
  add_action( 'admin_init', 'add_admin_css');
 function Create_Custom_Fields(){
+    $customPostTypeName = get_option( 'custompost_CTP_name', 'Custom post' );
     add_meta_box( 
         'custompost_cf',                    //ID
-        'Custom post details',              //Title of the fields
+        $customPostTypeName.' details',     //Title of the fields
         'show_custom_fields_custompost',    //Custom fields function
         'custompost', 
         'normal',

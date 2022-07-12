@@ -1,5 +1,4 @@
 <?php
-
 if( !function_exists('add_admin_css' ) ):
     function add_admin_css(){
         echo '
@@ -18,5 +17,4 @@ if( !function_exists('add_admin_css' ) ):
             </style>
         ';
     }
-endif;
- 
+endif; 
