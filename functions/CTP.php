@@ -2,7 +2,7 @@
 
 //Create the custom type to be used in the form
 function create_custompost_ctp(){
-    $customPostTypeName = get_option( 'custompost_CTP_name', 'Custom post' );    
+    $customPostTypeName = get_option( 'custompost_CTP_name', 'Custom post' );
     $labels = array(
         'name' => __($customPostTypeName, 'Post Type General Name', 'custompost'),
         'singular_name' => __($customPostTypeName, 'Post Type Singular Name', 'custompost'),
@@ -54,7 +54,7 @@ function create_custompost_ctp(){
         'capability_type' => 'post',
         'delete_with_user' => false,
         'rest_base' => 'custompost',
-        'rewrite' => array('slug' => 'custompost')
+        'rewrite' => array('slug' => create_slug_from_name($customPostTypeName))
     );
     register_post_type( 'custompost', $args);
 }
@@ -98,4 +98,11 @@ function get_all_custompost()
             '.$li.'
         </ul>
     </div>';
+}
+function create_slug_from_name($name)
+{
+    $name = remove_accents($name);
+    $name = strtolower($name);
+    $name = str_replace(" ","-",$name);
+    return $name;
 }
