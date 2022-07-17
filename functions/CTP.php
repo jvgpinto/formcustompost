@@ -90,8 +90,8 @@ function get_all_custompost()
     $html .= '</ul>';
 
     wp_reset_postdata(); 
-    console_log('get_all_custompost');
-    console_log($li);
+    // console_log('get_all_custompost');
+    // console_log($li);
     return '
     <div class="list-all-custompost">
         <ul class="custompost-ul">

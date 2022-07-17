@@ -119,7 +119,7 @@ function custompost_section_general_callback( $args ) {
     $customPostTypeName = strtolower(get_option( 'custompost_CTP_name', 'Custom post' ));
     ?>
     <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'This section we need the general settings', 'custompost' ); ?></p>
-    <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'To show all the published posts of type '.$customPostTypeName.' use the shortcode [get_all_custompost] in a page.', 'custompost' ); ?></p>
+    <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'To show all the published posts of type '.$customPostTypeName.' use the shortcode [allformcustompost] in a page.', 'custompost' ); ?></p>
     
     <?php
 }
