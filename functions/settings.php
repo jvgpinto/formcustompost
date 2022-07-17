@@ -10,14 +10,16 @@ function custompost_settings_init() {
     register_setting( 'custompost', 'custompost_field_content' );
     register_setting( 'custompost', 'custompost_field_shortcode_end' );
     register_setting( 'custompost', 'custompost_field_approver_email' );
+    register_setting( 'custompost', 'custompost_field_form_submited_message' );
  
+    //GENERAL SECTION
     // Register a new section in the "custompost" page.
     add_settings_section(
         'custompost_section_general',
         __( 'Custom post default text', 'custompost' ), 'custompost_section_general_callback',
         'custompost'
     );
- 
+
     // Register a new field in the "custompost_section_general" section, inside the "custompost" page.
     add_settings_field(
         'custompost_CTP_name', // As of WP 4.6 this value is used only internally.
@@ -81,7 +83,7 @@ function custompost_settings_init() {
         )
     );
 
-    
+    //EMAIL SECTION
     // Register a new section in the "custompost" page.
     add_settings_section(
         'custompost_section_email_config',
@@ -108,6 +110,28 @@ function custompost_settings_init() {
             'description'       => esc_attr( 'The email to receive email notifications of created contents that need approval.' )
         )
     );
+    //FORM SECTION
+     // Register a new section in the "custompost" page.
+     add_settings_section(
+        'custompost_section_form',
+        __( 'Custom post form', 'custompost' ), 'custompost_section_form_callback',
+        'custompost'
+    );
+    add_settings_field(
+        'custompost_field_form_submited_message', // As of WP 4.6 this value is used only internally.
+                                // Use $args' label_for to populate the id inside the callback.
+            __( 'Confirmation message', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_form',
+        array(
+            'label_for'         => 'custompost_field_form_submited_message',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'richtext',
+            'description'       => esc_attr( 'The message to display after form submit.' )
+        )
+    );
 }
  
 /**
@@ -120,6 +144,12 @@ function custompost_section_general_callback( $args ) {
     ?>
     <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'This section we need the general settings', 'custompost' ); ?></p>
     <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'To show all the published posts of type '.$customPostTypeName.' use the shortcode [allformcustompost] in a page.', 'custompost' ); ?></p>
+    
+    <?php
+}
+function custompost_section_form_callback( $args ) {
+    ?>
+    <p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Form settings section', 'custompost' ); ?></p>
     
     <?php
 }

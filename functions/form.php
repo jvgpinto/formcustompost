@@ -56,8 +56,11 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
             update_post_meta( $post_id,'_thumbnail_id', $attach_id );
         }
         if($post_id > 0){
-            
-            echo "<script>alert('Votre page a été sumis et sera annalisé sous peu. Merci.')</script>";
+            $message_confirmation = "<script>alert('".get_option( 
+                "custompost_field_form_submited_message"
+                , "Votre page a été sumis et sera annalisé sous peu. Merci.")
+                ."')</script>";
+            echo "{$message_confirmation}";
             email_create($post);
         }
 	}
@@ -84,29 +87,29 @@ if( ! function_exists('custompost_frontend_post' ) ):
 				<p>
 					<label for="name_custompost">'.esc_html__('Nom du défunt').'</label>
 					<br />
-					<input type="text" id="name_custompost" value="" tabindex="0" size="50" name="name_custompost" />
+					<input type="text" id="name_custompost" value="" tabindex="0" size="50" name="name_custompost" required/>
 				</p>
 				<p>
 					<label for="requesterName_custompost">'.esc_html__('Nom du demandeur').'</label>
 					<br />
-					<input type="text" value="" tabindex="0" name="requesterName_custompost" id="requesterName_custompost" />
+					<input type="text" value="" tabindex="0" name="requesterName_custompost" id="requesterName_custompost" required/>
 				</p>
 				<p>
 					<label for="post_image">
 						'.esc_html__("Télécharger une photo").'
 					</label>
 					<br />
-					<input type="file" name="post_image" id="post_image" aria-required="true">
+					<input type="file" name="post_image" id="post_image" aria-required="true" required>
 				</p>
 				<p>
 					<label for="requesterPhone_custompost">'.esc_html__('Téléphone du demandeur').'</label>
 					<br />
-					<input type="tel" value="" tabindex="0" size="16" name="requesterPhone_custompost" id="requesterPhone_custompost" aria-required="true"/>
+					<input type="tel" value="" tabindex="0" size="16" name="requesterPhone_custompost" id="requesterPhone_custompost" aria-required="true" required/>
 				</p>
 				<p>
 					<label for="requesterEmail_custompost">'.esc_html__('Courriel du demandeur').'</label>
 					<br />
-					<input type="email" value="" tabindex="0" size="16" name="requesterEmail_custompost" id="requesterEmail_custompost" aria-required="true"/>
+					<input type="email" value="" tabindex="0" size="16" name="requesterEmail_custompost" id="requesterEmail_custompost" aria-required="true" required/>
 				</p>
 
 				<p><input type="submit" value="Soumettre" tabindex="0" id="submit" name="submit" /></p>
