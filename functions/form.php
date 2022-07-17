@@ -37,6 +37,7 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
             )
         );
         $post_id = wp_insert_post($post);
+        send_mail($post);
         
         // For Featured Image
         if( !function_exists('wp_generate_attachment_metadata')){
@@ -61,7 +62,6 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
                 , "Votre page a été sumis et sera annalisé sous peu. Merci.")
                 ."')</script>";
             echo "{$message_confirmation}";
-            email_create($post);
         }
 	}
 endif;
@@ -74,7 +74,10 @@ function email_create($post){
     $body = esc_html__('Voici les informations soumis: <br>'.json_encode( $post ).'<br><br> <a href="'.$urlPost.'" target="_blank">Approuver</a>');
     $headers = array('Content-Type: text/html; charset=UTF-8');
     $emailSent = wp_mail( $adminEmail, $subject, $body, $headers, array('') );
-    console_log('Email sent=> '.$emailSent.' Email admin=> '.$adminEmail.' subject=> '.$subject.' message=> '.$body);
+    console_log('Email sent=> '.$emailSent);
+    console_log('Email admin=> '.$adminEmail);
+    console_log('subject=> '.$subject);
+    console_log('message=> '.$body);
 }
 
 //Create the form front-end
@@ -118,3 +121,46 @@ if( ! function_exists('custompost_frontend_post' ) ):
 		</div>';    
     }
 endif;
+
+function send_smtp_email( $phpmailer ) {
+    $phpmailer->isSMTP();
+    $phpmailer->Host       = 'smtp.office365.com';
+    $phpmailer->Port       = '587';
+    $phpmailer->SMTPSecure = 'tls';
+    $phpmailer->SMTPAuth   = true;
+    $phpmailer->Username   = '@hotmail.com';
+    $phpmailer->Password   = '';
+    $phpmailer->From       = '@hotmail.com';
+    $phpmailer->FromName   = '';
+    $phpmailer->addReplyTo('@hotmail.com', 'Joao Vitor Pinto');
+}
+
+function set_my_mail_content_type() {
+    return "text/html";
+}
+
+function send_mail($post) {
+    $adminEmail = get_option( 'custompost_field_approver_email' );
+    $subject = esc_html__("Contenu en attends de l'approbation");
+    $urlPost = get_edit_post_link($post_id);
+    $message = esc_html__('<h1>Voici les informations soumis: </h1><br>');
+    $postCustomFields = $post['meta_input'];
+    $message .="<br><b>Nom défunt</b>:       {$postCustomFields['name_custompost']}";
+    $message .="<br><b>Nom du demandeur</b>: {$postCustomFields['requesterName_custompost']}";
+    $message .="<br><b>Téléphone</b>:        {$postCustomFields['requesterPhone_custompost']}";
+    $message .="<br><b>Courriel</b>:         {$postCustomFields['requesterEmail_custompost']}";
+    $message .= "<br><br><div><!--[if mso]> <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{$urlPost}' style='height:38px;v-text-anchor:middle;width:200px;' arcsize='11%' strokecolor='#28501e' fillcolor='#92b441'> <w:anchorlock/> <center style='color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;'>Approuver!</center></v:roundrect><![endif]--><a href='{$urlPost}' style='background-color:#92b441;border:1px solid #28501e;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:38px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;'>Approuver!</a></div>";
+    $to = 'jvgpinto@gmail.com';
+    $subject = $subject;
+    //$message = 'This is the HTML message body <b>in bold!</b>'; 
+
+    add_filter( 'wp_mail_content_type','set_my_mail_content_type' );
+    add_action( 'phpmailer_init', 'send_smtp_email' );
+
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+    $mailSent = wp_mail( $to, $subject, $message,$headers );
+
+    remove_filter( 'wp_mail_content_type','set_my_mail_content_type' );
+    remove_action( 'phpmailer_init', 'send_smtp_email' );
+
+}
