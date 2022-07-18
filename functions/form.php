@@ -1,16 +1,37 @@
 <?php
-
+//add SweetAlert js library
+function wpb_hook_javascript_head() {
+    ?>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+       <script type="text/javascript"> 
+       document.addEventListener('DOMContentLoaded', function(){ 
+            const form = document.getElementById('new_post');
+            form.addEventListener('submit', submitForm);
+        }, false)
+            function submitForm(e){
+                e.preventDefault();
+                var btnSubmit = document.getElementById('custompost-submit');
+                btnSubmit.innerHTML = btnSubmit.innerText + '  <i class="fa fa-circle-o-notch fa-spin"></i>';
+                btnSubmit.disabled = true;
+                document.getElementById("new_post").submit();
+                return false;
+            };
+        </script>
+    <?php
+}
+add_action('wp_head', 'wpb_hook_javascript_head');
 if( ! function_exists('custompost_post_if_submitted' ) ):
 
 	function custompost_post_if_submitted() {
         require_once(ABSPATH . 'wp-config.php'); 
         require_once(ABSPATH . 'wp-includes/wp-db.php'); 
         require_once(ABSPATH . 'wp-admin/includes/taxonomy.php'); 
+        
         // Stop running function if form wasn't submitted
         if ( empty($_POST) ) {
             return;
         }
-
         //Add category with the first letter if not exists
         $catName = strtoupper(substr($_POST['name_custompost'],0,1));
         $title = $_POST['name_custompost'];
@@ -37,7 +58,7 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
             )
         );
         $post_id = wp_insert_post($post);
-        send_mail($post);
+        send_mail($post,$post_id);
         
         // For Featured Image
         if( !function_exists('wp_generate_attachment_metadata')){
@@ -57,28 +78,10 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
             update_post_meta( $post_id,'_thumbnail_id', $attach_id );
         }
         if($post_id > 0){
-            $message_confirmation = "<script>alert('".get_option( 
-                "custompost_field_form_submited_message"
-                , "Votre page a été sumis et sera annalisé sous peu. Merci.")
-                ."')</script>";
-            echo "{$message_confirmation}";
+            show_confirm_message("Votre page a été sumis et sera annalisé sous peu.");
         }
 	}
 endif;
-
-//Creation of email html 
-function email_create($post){
-    $adminEmail = get_option( 'custompost_field_approver_email' );
-    $subject = esc_html__("Contenu en attends de l'approbation");;
-    $urlPost = get_edit_post_link($post_id);
-    $body = esc_html__('Voici les informations soumis: <br>'.json_encode( $post ).'<br><br> <a href="'.$urlPost.'" target="_blank">Approuver</a>');
-    $headers = array('Content-Type: text/html; charset=UTF-8');
-    $emailSent = wp_mail( $adminEmail, $subject, $body, $headers, array('') );
-    console_log('Email sent=> '.$emailSent);
-    console_log('Email admin=> '.$adminEmail);
-    console_log('subject=> '.$subject);
-    console_log('message=> '.$body);
-}
 
 //Create the form front-end
 if( ! function_exists('custompost_frontend_post' ) ):
@@ -86,7 +89,7 @@ if( ! function_exists('custompost_frontend_post' ) ):
         custompost_post_if_submitted(); 
         return '
 		<div class="custompost_form_container">
-			<form id="new_post" name="new_post" method="post"  enctype="multipart/form-data">
+			<form id="new_post" name="new_post" method="post" enctype="multipart/form-data">
 				<p>
 					<label for="name_custompost">'.esc_html__('Nom du défunt').'</label>
 					<br />
@@ -115,7 +118,11 @@ if( ! function_exists('custompost_frontend_post' ) ):
 					<input type="email" value="" tabindex="0" size="16" name="requesterEmail_custompost" id="requesterEmail_custompost" aria-required="true" required/>
 				</p>
 
-				<p><input type="submit" value="Soumettre" tabindex="0" id="submit" name="submit" /></p>
+				<p>
+                    <button type="submit" tabindex="0" id="custompost-submit" name="custompost-submit">
+                        '.__('Submit').'
+                    </button
+                </p>
 			
 			</form>
 		</div>';    
@@ -123,36 +130,41 @@ if( ! function_exists('custompost_frontend_post' ) ):
 endif;
 
 function send_smtp_email( $phpmailer ) {
-    $phpmailer->isSMTP();
-    $phpmailer->Host       = 'smtp.office365.com';
-    $phpmailer->Port       = '587';
-    $phpmailer->SMTPSecure = 'tls';
-    $phpmailer->SMTPAuth   = true;
-    $phpmailer->Username   = '@hotmail.com';
-    $phpmailer->Password   = '';
-    $phpmailer->From       = '@hotmail.com';
-    $phpmailer->FromName   = '';
-    $phpmailer->addReplyTo('@hotmail.com', 'Joao Vitor Pinto');
+    if(get_option( 'custompost_field_phpmailer_iscustom' ,false)):
+        $phpmailer->isSMTP();
+        $phpmailer->Host       = get_option( 'custompost_field_phpmailer_host' ,'');
+        $phpmailer->Port       = get_option( 'custompost_field_phpmailer_port' ,'');
+        $phpmailer->SMTPSecure = get_option( 'custompost_field_phpmailer_secure' ,'tls');
+        $phpmailer->SMTPAuth   = get_option( 'custompost_field_phpmailer_smtpauth ' ,true);
+        $phpmailer->Username   = get_option( 'custompost_field_phpmailer_username' ,'');
+        $phpmailer->Password   = get_option( 'custompost_field_phpmailer_psw' ,'');
+        $phpmailer->From       = get_option( 'custompost_field_phpmailer_from' ,'');
+        $phpmailer->FromName   = get_option( 'custompost_field_phpmailer_fromName' ,'');
+    //$phpmailer->addReplyTo(get_option( 'custompost_field_phpmailer_reply_mail' ,''), get_option( 'custompost_field_phpmailer_reply_name' ,''));
+    endif;
 }
 
 function set_my_mail_content_type() {
     return "text/html";
 }
 
-function send_mail($post) {
+function send_mail($post,$post_id) {
     $adminEmail = get_option( 'custompost_field_approver_email' );
-    $subject = esc_html__("Contenu en attends de l'approbation");
+    $subject = "Contenu en attends de l'approbation";
     $urlPost = get_edit_post_link($post_id);
-    $message = esc_html__('<h1>Voici les informations soumis: </h1><br>');
+    $message = '<h1>Voici les informations soumis: </h1><br>';
     $postCustomFields = $post['meta_input'];
+    // $imagePost = get_the_post_thumbnail_url( $post);
+    // if($imagePost):
+    //     $message .="<img src='$imagePost'>";
+    // endif;
     $message .="<br><b>Nom défunt</b>:       {$postCustomFields['name_custompost']}";
     $message .="<br><b>Nom du demandeur</b>: {$postCustomFields['requesterName_custompost']}";
     $message .="<br><b>Téléphone</b>:        {$postCustomFields['requesterPhone_custompost']}";
     $message .="<br><b>Courriel</b>:         {$postCustomFields['requesterEmail_custompost']}";
     $message .= "<br><br><div><!--[if mso]> <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{$urlPost}' style='height:38px;v-text-anchor:middle;width:200px;' arcsize='11%' strokecolor='#28501e' fillcolor='#92b441'> <w:anchorlock/> <center style='color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;'>Approuver!</center></v:roundrect><![endif]--><a href='{$urlPost}' style='background-color:#92b441;border:1px solid #28501e;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:38px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;'>Approuver!</a></div>";
-    $to = 'jvgpinto@gmail.com';
+    $to = $adminEmail;
     $subject = $subject;
-    //$message = 'This is the HTML message body <b>in bold!</b>'; 
 
     add_filter( 'wp_mail_content_type','set_my_mail_content_type' );
     add_action( 'phpmailer_init', 'send_smtp_email' );

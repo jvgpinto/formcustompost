@@ -11,6 +11,17 @@ function custompost_settings_init() {
     register_setting( 'custompost', 'custompost_field_shortcode_end' );
     register_setting( 'custompost', 'custompost_field_approver_email' );
     register_setting( 'custompost', 'custompost_field_form_submited_message' );
+
+    
+    register_setting( 'custompost', 'custompost_field_phpmailer_iscustom' );    
+    register_setting( 'custompost', 'custompost_field_phpmailer_host' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_port' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_secure' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_smtpauth' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_username' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_psw' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_from' );
+    register_setting( 'custompost', 'custompost_field_phpmailer_fromName' );
  
     //GENERAL SECTION
     // Register a new section in the "custompost" page.
@@ -96,6 +107,21 @@ function custompost_settings_init() {
         'custompost'
     );
     add_settings_field(
+        'custompost_field_phpmailer_iscustom', // As of WP 4.6 this value is used only internally.
+                                // Use $args' label_for to populate the id inside the callback.
+            __( 'Use custom email SMTP', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_iscustom',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'checkbox',
+            'description'       => __( 'Use the custom SMTP config. New configs will be show after save if selected.' )
+        )
+    );
+    add_settings_field(
         'custompost_field_approver_email', // As of WP 4.6 this value is used only internally.
                                 // Use $args' label_for to populate the id inside the callback.
             __( 'Approver email', 'custompost' ),
@@ -107,20 +133,134 @@ function custompost_settings_init() {
             'class'             => 'custompost_row',
             'custompost_custom_data' => '',
             'type'              => 'input',
-            'description'       => esc_attr( 'The email to receive email notifications of created contents that need approval.' )
+            'description'       => __( 'The email to receive email notifications of created contents that need approval.' )
         )
     );
+    add_settings_field(
+        'custompost_field_phpmailer_host', // As of WP 4.6 this value is used only internally.
+                                // Use $args' label_for to populate the id inside the callback.
+            __( 'SMTP host', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_host',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'input',
+            'description'       => __( 'SMTP host' )
+        )
+    );
+    
+    add_settings_field(
+        'custompost_field_phpmailer_port', 
+        __( 'SMTP port', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_port',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'input',
+            'description'       => __( 'SMTP port' )
+        )
+    );
+    add_settings_field(
+        'custompost_field_phpmailer_secure',
+        __( 'SMTP secure', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_secure',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'select',
+            'description'       => __( 'SMTP secure: tls or ssl' ),
+            'options'           => array("tls", "ssl")
+        )
+    );
+    add_settings_field(
+        'custompost_field_phpmailer_smtpauth', 
+        __( 'SMTP auth', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_smtpauth',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'checkbox',
+            'description'       => __( 'SMTP auth true or false' )
+        )
+    );
+    add_settings_field(
+        'custompost_field_phpmailer_username', 
+        __( 'SMTP username', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_username',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'input',
+            'description'       => __( 'SMTP username' )
+        )
+    );
+    add_settings_field(
+        'custompost_field_phpmailer_psw',
+        __( 'SMTP password', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_psw',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'psw',
+            'description'       => __( 'SMTP password' )
+        )
+    );
+    add_settings_field(
+        'custompost_field_phpmailer_from', 
+        __( 'SMTP email from', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_from',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'email',
+            'description'       => __( 'SMTP email from' )
+        )
+    );
+    add_settings_field(
+        'custompost_field_phpmailer_fromName', 
+        __( 'SMTP from name', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_phpmailer_fromName',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'input',
+            'description'       => __( 'SMTP from name' )
+        )
+    );
+    
     //FORM SECTION
-     // Register a new section in the "custompost" page.
      add_settings_section(
         'custompost_section_form',
         __( 'Custom post form', 'custompost' ), 'custompost_section_form_callback',
         'custompost'
     );
     add_settings_field(
-        'custompost_field_form_submited_message', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
-            __( 'Confirmation message', 'custompost' ),
+        'custompost_field_form_submited_message', 
+        __( 'Confirmation message', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
         'custompost_section_form',
@@ -128,8 +268,8 @@ function custompost_settings_init() {
             'label_for'         => 'custompost_field_form_submited_message',
             'class'             => 'custompost_row',
             'custompost_custom_data' => '',
-            'type'              => 'richtext',
-            'description'       => esc_attr( 'The message to display after form submit.' )
+            'type'              => 'input',
+            'description'       => __( 'The message to display after form submit.' )
         )
     );
 }
@@ -175,6 +315,54 @@ function custompost_field_html_generate( $args ) {
                 </p>
             <?php
             break;
+        case "email":
+            ?>
+                <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
+                    <input  
+                    id="<?php echo esc_attr( $args['label_for'] ); ?>"
+                    type="email"
+                    name="<?php echo esc_attr( $args['label_for'] ); ?>" 
+                    value="<?php echo esc_attr($value); ?>" />
+                </label>
+                <p class="description">
+                    <?php echo $args['description'] ?>
+                </p>
+            <?php
+            break;
+        case "select":
+            ?>
+                <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
+                    <select  
+                    id="<?php echo esc_attr( $args['label_for'] ); ?>"
+                    name="<?php echo esc_attr( $args['label_for'] ); ?>" 
+                    >
+                        <?php 
+                            foreach($args['options'] as $item) {
+                                $selected = ($value==$item) ? 'selected="selected"' : '';
+                                echo "<option value='$item' $selected>$item</option>";
+                            }
+                        ?>
+                    </select>
+                </label>
+                <p class="description">
+                    <?php echo $args['description'] ?>
+                </p>
+            <?php
+            break;
+        case "psw":
+            ?>
+                <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
+                    <input  
+                    type="password"
+                    id="<?php echo esc_attr( $args['label_for'] ); ?>"
+                    name="<?php echo esc_attr( $args['label_for'] ); ?>" 
+                    value="<?php echo esc_attr($value); ?>" />
+                </label>
+                <p class="description">
+                    <?php echo $args['description'] ?>
+                </p>
+            <?php
+            break;
         case "textarea":
             ?>
                 <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
@@ -204,12 +392,22 @@ function custompost_field_html_generate( $args ) {
                 </p>
             <?php
             break;
+        case "checkbox":
+            ?>
+             <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
+                <input type="checkbox" id="<?php echo esc_attr( $args['label_for'] ); ?>" name="<?php echo esc_attr( $args['label_for'] ); ?>" value="1" <?php checked( $value, 1 )?> />
+            </label>
+            <p class="description">
+                    <?php echo $args['description'] ?>
+            </p>
+            <?php
+            break;
         default:
             ?>
                 <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
                     <input  
                     id="<?php echo esc_attr( $args['label_for'] ); ?>"
-                    name="custompost_options[<?php echo esc_attr( $args['label_for'] ); ?>]"
+                    name="<?php echo esc_attr( $args['label_for'] ); ?>"
                     value="<?php echo esc_attr($value); ?>" />
                 </label>
                 <p class="description">
@@ -259,6 +457,13 @@ function custompost_options_page_html() {
         $htmlContent= htmlentities(wpautop($_POST['custompost_field_content']));
         console_log($htmlContent);
         $fff= update_option('custompost_field_content', $htmlContent);
+    }
+    //TODO DELETE
+    $all_options = wp_load_alloptions();    
+    foreach ( $all_options as $name => $value ) {
+        if ( stristr( $name, 'custompost_' ) ) {
+           console_log("{$name}=> {$value}");
+        }
     }
  
     // show error/update messages
