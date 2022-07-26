@@ -3,9 +3,9 @@
 function wpb_hook_javascript_head() {
     ?>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-       <script type="text/javascript"> 
-       document.addEventListener('DOMContentLoaded', function(){ 
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script type="text/javascript"> 
+        document.addEventListener('DOMContentLoaded', function(){ 
             const form = document.getElementById('new_post');
             form.addEventListener('submit', submitForm);
         }, false)
@@ -78,7 +78,8 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
             update_post_meta( $post_id,'_thumbnail_id', $attach_id );
         }
         if($post_id > 0){
-            show_confirm_message("Votre page a été sumis et sera annalisé sous peu.");
+            $confirmMessage = get_option( "custompost_field_form_submited_message", "Form submited." );
+            show_confirm_message($confirmMessage);
         }
 	}
 endif;
@@ -130,18 +131,16 @@ if( ! function_exists('custompost_frontend_post' ) ):
 endif;
 
 function send_smtp_email( $phpmailer ) {
-    if(get_option( 'custompost_field_phpmailer_iscustom' ,false)):
-        $phpmailer->isSMTP();
-        $phpmailer->Host       = get_option( 'custompost_field_phpmailer_host' ,'');
-        $phpmailer->Port       = get_option( 'custompost_field_phpmailer_port' ,'');
-        $phpmailer->SMTPSecure = get_option( 'custompost_field_phpmailer_secure' ,'tls');
-        $phpmailer->SMTPAuth   = get_option( 'custompost_field_phpmailer_smtpauth ' ,true);
-        $phpmailer->Username   = get_option( 'custompost_field_phpmailer_username' ,'');
-        $phpmailer->Password   = get_option( 'custompost_field_phpmailer_psw' ,'');
-        $phpmailer->From       = get_option( 'custompost_field_phpmailer_from' ,'');
-        $phpmailer->FromName   = get_option( 'custompost_field_phpmailer_fromName' ,'');
-    //$phpmailer->addReplyTo(get_option( 'custompost_field_phpmailer_reply_mail' ,''), get_option( 'custompost_field_phpmailer_reply_name' ,''));
-    endif;
+   
+    $phpmailer->isSMTP();
+    $phpmailer->Host       = get_option( 'custompost_field_phpmailer_host' ,'');
+    $phpmailer->Port       = get_option( 'custompost_field_phpmailer_port' , 587);
+    $phpmailer->SMTPSecure = get_option( 'custompost_field_phpmailer_secure' ,'tls');
+    $phpmailer->SMTPAuth   = get_option( 'custompost_field_phpmailer_smtpauth ' ,true);
+    $phpmailer->Username   = get_option( 'custompost_field_phpmailer_username' ,'');
+    $phpmailer->Password   = get_option( 'custompost_field_phpmailer_psw' ,'');
+    $phpmailer->From       = get_option( 'custompost_field_phpmailer_from' ,'');
+    $phpmailer->FromName   = get_option( 'custompost_field_phpmailer_fromName' ,'');
 }
 
 function set_my_mail_content_type() {
@@ -154,10 +153,6 @@ function send_mail($post,$post_id) {
     $urlPost = get_edit_post_link($post_id);
     $message = '<h1>Voici les informations soumis: </h1><br>';
     $postCustomFields = $post['meta_input'];
-    // $imagePost = get_the_post_thumbnail_url( $post);
-    // if($imagePost):
-    //     $message .="<img src='$imagePost'>";
-    // endif;
     $message .="<br><b>Nom défunt</b>:       {$postCustomFields['name_custompost']}";
     $message .="<br><b>Nom du demandeur</b>: {$postCustomFields['requesterName_custompost']}";
     $message .="<br><b>Téléphone</b>:        {$postCustomFields['requesterPhone_custompost']}";
@@ -165,14 +160,20 @@ function send_mail($post,$post_id) {
     $message .= "<br><br><div><!--[if mso]> <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{$urlPost}' style='height:38px;v-text-anchor:middle;width:200px;' arcsize='11%' strokecolor='#28501e' fillcolor='#92b441'> <w:anchorlock/> <center style='color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;'>Approuver!</center></v:roundrect><![endif]--><a href='{$urlPost}' style='background-color:#92b441;border:1px solid #28501e;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:38px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;'>Approuver!</a></div>";
     $to = $adminEmail;
     $subject = $subject;
-
-    add_filter( 'wp_mail_content_type','set_my_mail_content_type' );
-    add_action( 'phpmailer_init', 'send_smtp_email' );
-
     $headers = array('Content-Type: text/html; charset=UTF-8');
-    $mailSent = wp_mail( $to, $subject, $message,$headers );
+    
+    //Verify in settings if use custom smtp.
+    if(get_option('custompost_field_phpmailer_iscustom', 0 ) != 1 ){
+        $mailSent = wp_mail( $to, $subject, $message,$headers );
+        console_log("Email sent by default wp_mail");
+    }else{
+        add_filter( 'wp_mail_content_type','set_my_mail_content_type' );
+        add_action( 'phpmailer_init', 'send_smtp_email' );
 
-    remove_filter( 'wp_mail_content_type','set_my_mail_content_type' );
-    remove_action( 'phpmailer_init', 'send_smtp_email' );
+        $mailSent = wp_mail( $to, $subject, $message,$headers );
+
+        remove_filter( 'wp_mail_content_type','set_my_mail_content_type' );
+        remove_action( 'phpmailer_init', 'send_smtp_email' );
+    }
 
 }
