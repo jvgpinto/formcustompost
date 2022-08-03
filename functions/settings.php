@@ -31,10 +31,8 @@ function custompost_settings_init() {
         'custompost'
     );
 
-    // Register a new field in the "custompost_section_general" section, inside the "custompost" page.
     add_settings_field(
-        'custompost_CTP_name', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_CTP_name', 
             __( 'The name of the content type', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -47,10 +45,8 @@ function custompost_settings_init() {
             'description'       => esc_attr( 'The name will be used on menu' )
         )
     );
-    // Register a new field in the "custompost_section_general" section, inside the "custompost" page.
     add_settings_field(
-        'custompost_field_title', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_field_title',
             __( 'Text default title sufix', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -64,8 +60,7 @@ function custompost_settings_init() {
         )
     );
     add_settings_field(
-        'custompost_field_content', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_field_content', 
             __( 'Text default for post content', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -79,8 +74,7 @@ function custompost_settings_init() {
         )
     );
     add_settings_field(
-        'custompost_field_shortcode_end', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_field_shortcode_end',
             __( 'The shortcode to inclue on the end of the content if we have one.', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -90,7 +84,7 @@ function custompost_settings_init() {
             'class'             => 'custompost_row',
             'custompost_custom_data' => '',
             'type'              => 'input',
-            'description'       => esc_attr( 'The name of the shortcode to inclue on the end of the content if we have one whithout [].' )
+            'description'       => esc_attr( 'The name of the shortcode to inclue on the end of the content if we have one.' )
         )
     );
 
@@ -107,8 +101,7 @@ function custompost_settings_init() {
         'custompost'
     );
     add_settings_field(
-        'custompost_field_phpmailer_iscustom', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_field_phpmailer_iscustom',
             __( 'Use custom email SMTP', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -122,8 +115,7 @@ function custompost_settings_init() {
         )
     );
     add_settings_field(
-        'custompost_field_approver_email', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_field_approver_email',
             __( 'Approver email', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -137,8 +129,7 @@ function custompost_settings_init() {
         )
     );
     add_settings_field(
-        'custompost_field_phpmailer_host', // As of WP 4.6 this value is used only internally.
-                                // Use $args' label_for to populate the id inside the callback.
+        'custompost_field_phpmailer_host',
             __( 'SMTP host', 'custompost' ),
         'custompost_field_html_generate',
         'custompost',
@@ -295,12 +286,7 @@ function custompost_section_form_callback( $args ) {
 }
  
 function custompost_field_html_generate( $args ) {
-    // Get the value of the setting we've registered with register_setting()
-    //console_log($args['label_for']);
     $value = get_option( $args['label_for']);
-    //console_log($value);
-    $all_options = wp_load_alloptions();
-    //console_log($all_options);
     switch ($args['type']) {
         case "input":
             ?>
@@ -457,13 +443,6 @@ function custompost_options_page_html() {
         $htmlContent= htmlentities(wpautop($_POST['custompost_field_content']));
         console_log($htmlContent);
         $fff= update_option('custompost_field_content', $htmlContent);
-    }
-    //TODO DELETE
-    $all_options = wp_load_alloptions();    
-    foreach ( $all_options as $name => $value ) {
-        if ( stristr( $name, 'custompost_' ) ) {
-           console_log("{$name}=> {$value}");
-        }
     }
  
     // show error/update messages

@@ -38,5 +38,6 @@ include('functions/settings.php');
 
 //Custom filters for title and content.
 include('functions/filters.php');
+add_filter( 'wpcf7_form_elements', 'do_shortcode' );
 add_filter( 'the_title', 'filter_title_custompost',10,2);
 add_filter( 'the_content', 'filter_content_custompost');

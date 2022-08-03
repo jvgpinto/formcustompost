@@ -7,7 +7,12 @@ function wpb_hook_javascript_head() {
         <script type="text/javascript"> 
         document.addEventListener('DOMContentLoaded', function(){ 
             const form = document.getElementById('new_post');
-            form.addEventListener('submit', submitForm);
+            if(form){
+                form.addEventListener('submit', submitForm);
+            }
+            if(document.getElementsByName("donInMe")[0] && document.getElementById("custompost-title")){
+                document.getElementsByName("donInMe")[0].value = document.getElementById("custompost-title").value
+            }
         }, false)
             function submitForm(e){
                 e.preventDefault();
