@@ -1,7 +1,7 @@
 # Formcustompost plugin
 #### An wordpress plugin to create a post from a form using a custom type.
 
-##### Requirements to work:
+#### Requirements to work:
 The permalink configuration need to be "/%postname%/" otherside you'll have a 404 page :( 
 I'm working on it.
 
