@@ -3,10 +3,10 @@
 /**
  * Plugin Name:       Form custom post
  * Plugin URI:        https://github.com/jvgpinto/formcustompost
- * Description:       Create a custom post type with a form that can create a post from the front-end.
- * Version:           0.0.1
- * Requires at least: 5.2
- * Requires PHP:      7.2
+ * Description:       Create a custom post type with a form that can create a post from the front-end and send an email to a designed approver.
+ * Version:           1.0.0
+ * Requires at least: 4.1.5
+ * Requires PHP:      5.4.45
  * Author:            Joao Pinto
  * Author URI:        https://github.com/jvgpinto
  * License:           GPL v2 or later

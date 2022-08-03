@@ -1,5 +1,5 @@
 <?php
-//add SweetAlert js library
+//add SweetAlert js library and scripts
 function wpb_hook_javascript_head() {
     ?>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -40,7 +40,7 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
         //Add category with the first letter if not exists
         $catName = strtoupper(substr($_POST['name_custompost'],0,1));
         $title = $_POST['name_custompost'];
-        $content = '';//esc_html__(get_option('custompost_field_content'));
+        $content = '';
         if ( shortcode_exists( 'custompost_field_shortcode_end' ) ) {
             $content .= do_shortcode('['.get_option('custompost_field_shortcode_end').']');
         }
