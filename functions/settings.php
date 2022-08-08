@@ -11,6 +11,7 @@ function custompost_settings_init() {
     register_setting( 'custompost', 'custompost_field_shortcode_end' );
     register_setting( 'custompost', 'custompost_field_approver_email' );
     register_setting( 'custompost', 'custompost_field_form_submited_message' );
+    register_setting( 'custompost', 'custompost_field_create_translations' );
 
     
     register_setting( 'custompost', 'custompost_field_phpmailer_iscustom' );    
@@ -85,6 +86,20 @@ function custompost_settings_init() {
             'custompost_custom_data' => '',
             'type'              => 'input',
             'description'       => esc_attr( 'The name of the shortcode to inclue on the end of the content if we have one.' )
+        )
+    );
+    add_settings_field(
+        'custompost_field_create_translations',
+            __( 'Crete translations?', 'custompost' ),
+        'custompost_field_html_generate',
+        'custompost',
+        'custompost_section_email_config',
+        array(
+            'label_for'         => 'custompost_field_create_translations',
+            'class'             => 'custompost_row',
+            'custompost_custom_data' => '',
+            'type'              => 'checkbox',
+            'description'       => __( 'To create translated versions of post using "Polylang"' )
         )
     );
 
@@ -441,7 +456,7 @@ function custompost_options_page_html() {
     }
     if(isset($_POST['custompost_field_content'])  ){
         $htmlContent= htmlentities(wpautop($_POST['custompost_field_content']));
-        console_log($htmlContent);
+        //console_log($htmlContent);
         $fff= update_option('custompost_field_content', $htmlContent);
     }
  
@@ -463,4 +478,15 @@ function custompost_options_page_html() {
         </form>
     </div>
     <?php
+}
+
+//Called after settings update
+function settings_updated(){
+
+    //If site uses polylang, register strings.
+    if ( function_exists( 'pll_register_string' ) ) {
+        //pll_register_string( $name, $string, $group, $multiline );
+        pll_register_string( "Custom form title sufix", get_option( "custompost_field_title", "" ), "customform");
+        pll_register_string( "Custom form title body", get_option( "custompost_field_content", "" ), "customform", true);    
+     }
 }

@@ -35,6 +35,7 @@ include('functions/form.php');
 add_shortcode( 'formcustompost', 'custompost_frontend_post' );
 
 include('functions/settings.php');
+add_action('updated_option', 'settings_updated', 10, 3);
 
 //Custom filters for title and content.
 include('functions/filters.php');

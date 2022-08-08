@@ -82,6 +82,9 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
         if($attach_id > 0) {
             update_post_meta( $post_id,'_thumbnail_id', $attach_id );
         }
+        if(get_option( "custompost_field_create_translations", false)){
+            create_languages_version($post_id, $post, $attach_id);
+        }
         if($post_id > 0){
             $confirmMessage = get_option( "custompost_field_form_submited_message", "Form submited." );
             show_confirm_message($confirmMessage);
@@ -90,7 +93,8 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
 endif;
 
 //Create the form front-end
-if( ! function_exists('custompost_frontend_post' ) ):
+//if( ! function_exists('custompost_frontend_post' ) ):
+if( ! function_exists('custompost_frontend_post' ) ):    
     function custompost_frontend_post() {
         custompost_post_if_submitted(); 
         return '
@@ -131,7 +135,7 @@ if( ! function_exists('custompost_frontend_post' ) ):
                 </p>
 			
 			</form>
-		</div>';    
+		</div>';   
     }
 endif;
 
@@ -172,6 +176,7 @@ function send_mail($post,$post_id) {
         $mailSent = wp_mail( $to, $subject, $message,$headers );
         console_log("Email sent by default wp_mail");
     }else{
+        console_log('Custom wp_mail sent');
         add_filter( 'wp_mail_content_type','set_my_mail_content_type' );
         add_action( 'phpmailer_init', 'send_smtp_email' );
 
@@ -181,4 +186,41 @@ function send_mail($post,$post_id) {
         remove_action( 'phpmailer_init', 'send_smtp_email' );
     }
 
+}
+
+function create_languages_version($postIdOrigin, $postOrigin, $attach_id){
+    //https://localhost/fhmc/wp-admin/post-new.php?post_type=custompost&from_post=2877&new_lang=en
+        
+
+    if (function_exists('pll_set_post_language') 
+        && function_exists('pll_save_post_translations')) {
+        $args = array(
+            'display_names_as' => 'slug',
+            'raw' => 1
+        );
+        $default_lang = pll_default_language();
+        $all_languages = pll_the_languages( $args );
+        pll_set_post_language($postIdOrigin, $default_lang);
+
+        
+        $posts = array();
+        foreach ($all_languages as $language => $value) {
+            if(!$value["current_lang"]){
+                $posts[$value["slug"]] = "";
+            }
+        }
+
+        // create post on the other languages.
+        foreach ($posts as $language => $value) {
+            $posts[$language] = wp_insert_post($postOrigin);
+        }
+
+        // set post language.
+        foreach ($posts as $language => $value) {
+            pll_set_post_language($value, $language);
+            update_post_meta( $value,'_thumbnail_id', $attach_id );
+        } 
+        $posts[$default_lang] = $postIdOrigin;      
+        pll_save_post_translations($posts);
+    }
 }
