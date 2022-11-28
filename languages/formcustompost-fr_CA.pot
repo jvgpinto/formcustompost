@@ -41,3 +41,29 @@ msgstr "Téléphone du demandeur"
 
 msgid "Upload a picture"
 msgstr "Télécharger une photo"
+
+#Admin region
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Requester name"
+msgstr "Nom du démandeur"
+
+msgid "Requester phone"
+msgstr "Telephone du démandeur"
+
+msgid "Requester e-mail"
+msgstr "Courriel du démandeur"
+
+msgid "Requester address"
+msgstr "Adresse du démandeur"
+
+msgid "Requester city"
+msgstr "Ville du démandeur"
+
+msgid "Requester postal code"
+msgstr "Code postal du démandeur"
+
+msgid "Requester province, country"
+msgstr "Provinde et pays du démandeur"
