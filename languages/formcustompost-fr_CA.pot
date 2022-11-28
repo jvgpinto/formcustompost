@@ -67,3 +67,8 @@ msgstr "Code postal du démandeur"
 
 msgid "Requester province, country"
 msgstr "Provinde et pays du démandeur"
+
+#Post region
+
+msgid "COMMÉMORER"
+msgstr "Commémorer"
