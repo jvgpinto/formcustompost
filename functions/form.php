@@ -11,7 +11,10 @@ function wpb_hook_javascript_head() {
                 form.addEventListener('submit', submitForm);
             }
             if(document.getElementsByName("donInMe")[0] && document.getElementById("custompost-title")){
-                document.getElementsByName("donInMe")[0].value = document.getElementById("custompost-title").value
+                document.getElementsByName("donInMe")[0].value = document.getElementById("custompost-title").value;
+            }
+            if(document.getElementsByName("personneInform")[0] && document.getElementById("custompost-requester-name")){
+                document.getElementsByName("personneInform")[0].value = document.getElementById("custompost-requester-name").value;
             }
         }, false)
             function submitForm(e){
