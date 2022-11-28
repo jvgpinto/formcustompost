@@ -4,7 +4,8 @@
  * Plugin Name:       Form custom post
  * Plugin URI:        https://github.com/jvgpinto/formcustompost
  * Description:       Create a custom post type with a form that can create a post from the front-end and send an email to a designed approver.
- * Version:           1.0.0
+ * Domain Path: /languages/
+ * Version:           1.2.0
  * Requires at least: 4.1.5
  * Requires PHP:      5.4.45
  * Author:            Joao Pinto
@@ -19,11 +20,16 @@ if(!defined('ABSPATH')){
     echo 'Nothing to do when you call me directly';
     die;
 }
+
  //Support functions
 include('functions/tools.php');
 
  //Custom fields
  include('functions/customFields.php');
+
+ //Include translations if exists 
+add_action( 'plugins_loaded', 'load_plugin_textdomain' );
+
 add_action( 'admin_init', 'Create_Custom_Fields');
 
  //Custom type

@@ -16,10 +16,14 @@ function filter_title_custompost ( $title, $id = null ) {
     if ( ! is_admin() && ! is_null( $id ) ) {
         $post = get_post( $id );
         if ( $post instanceof WP_Post && ( $post->post_type == 'custompost') ) {
-            $new_titile = esc_html__(get_option('custompost_field_title','')).' '.$title;
-            if( ! empty( $new_titile ) ) {
-                $new_titile = $new_titile."<input type='hidden' id='custompost-title' value='".$title."'/>";
-                return $new_titile;
+            $new_title = esc_html__(get_option('custompost_field_title','')).' '.$title;
+            $requesterName = esc_html__(get_post_meta( $post->ID, 'requesterName_custompost', true);)
+            if( ! empty( $new_title ) ) {
+                $new_title = $new_title."<input type='hidden' id='custompost-title' value='".$title."'/>";
+                if( ! empty( $requesterName ) ) {
+                    $new_title = $new_title."<input type='hidden' id='custompost-requester-name' value='".$requesterName."'/>";
+                }
+                return $new_title;
             }
         }
     }

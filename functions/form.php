@@ -11,7 +11,10 @@ function wpb_hook_javascript_head() {
                 form.addEventListener('submit', submitForm);
             }
             if(document.getElementsByName("donInMe")[0] && document.getElementById("custompost-title")){
-                document.getElementsByName("donInMe")[0].value = document.getElementById("custompost-title").value
+                document.getElementsByName("donInMe")[0].value = document.getElementById("custompost-title").value;
+            }
+            if(document.getElementsByName("personneInform")[0] && document.getElementById("custompost-requester-name")){
+                document.getElementsByName("personneInform")[0].value = document.getElementById("custompost-requester-name").value;
             }
         }, false)
             function submitForm(e){
@@ -59,7 +62,11 @@ if( ! function_exists('custompost_post_if_submitted' ) ):
                 'name_custompost' => $_POST['name_custompost'],
                 'requesterName_custompost' => $_POST['requesterName_custompost'],
                 'requesterPhone_custompost' => $_POST['requesterPhone_custompost'],
-                'requesterEmail_custompost' => $_POST['requesterEmail_custompost']
+                'requesterEmail_custompost' => $_POST['requesterEmail_custompost'],
+                'requesterAddress_custompost' => $_POST['requesterAddress_custompost'],
+                'requesterCity_custompost' => $_POST['requesterCity_custompost'],
+                'requesterPostalCode_custompost' => $_POST['requesterPostalCode_custompost'],
+                'requesterProvinceCountry_custompost' => $_POST['requesterProvinceCountry_custompost']
             )
         );
         $post_id = wp_insert_post($post);
@@ -101,31 +108,51 @@ if( ! function_exists('custompost_frontend_post' ) ):
 		<div class="custompost_form_container">
 			<form id="new_post" name="new_post" method="post" enctype="multipart/form-data">
 				<p>
-					<label for="name_custompost">'.esc_html__('Nom du défunt').'</label>
+					<label for="name_custompost">'.esc_html__('Name of the deceased').'</label>
 					<br />
 					<input type="text" id="name_custompost" value="" tabindex="0" size="50" name="name_custompost" required/>
 				</p>
 				<p>
-					<label for="requesterName_custompost">'.esc_html__('Nom du demandeur').'</label>
+					<label for="requesterName_custompost">'.esc_html__('Name of requester').'</label>
 					<br />
-					<input type="text" value="" tabindex="0" name="requesterName_custompost" id="requesterName_custompost" required/>
+					<input type="text" value="" tabindex="0" size="50" name="requesterName_custompost" id="requesterName_custompost" required/>
 				</p>
 				<p>
-					<label for="post_image">
-						'.esc_html__("Télécharger une photo").'
-					</label>
+					<label for="requesterEmail_custompost">'.esc_html__("Requester's email").'</label>
 					<br />
-					<input type="file" name="post_image" id="post_image" aria-required="true" required>
+					<input type="email" value="" tabindex="0" size="16" name="requesterEmail_custompost" id="requesterEmail_custompost" aria-required="true" required/>
+				</p>
+                <p>
+					<label for="requesterAddress_custompost">'.esc_html__("Requester's address").'</label>
+					<br />
+					<input type="text" value="" tabindex="0" size="50" name="requesterAddress_custompost" id="requesterAddress_custompost" aria-required="true" required/>
+				</p>
+                <p>
+					<label for="requesterCity_custompost">'.esc_html__("Requester's city").'</label>
+					<br />
+					<input type="text" value="" tabindex="0" size="50" name="requesterCity_custompost" id="requesterCity_custompost" aria-required="true" required/>
+				</p>
+                <p>
+					<label for="requesterPostalCode_custompost">'.esc_html__("Requester's postal code").'</label>
+					<br />
+					<input type="text" value="" tabindex="0" size="16" name="requesterPostalCode_custompost" id="requesterPostalCode_custompost" aria-required="true" required/>
+				</p>
+                <p>
+					<label for="requesterProvinceCountry_custompost">'.esc_html__("Province, state, country of requester").'</label>
+					<br />
+					<input type="text" value="" tabindex="0" size="16" name="requesterProvinceCountry_custompost" id="requesterProvinceCountry_custompost" aria-required="true" required/>
 				</p>
 				<p>
-					<label for="requesterPhone_custompost">'.esc_html__('Téléphone du demandeur').'</label>
+					<label for="requesterPhone_custompost">'.esc_html__("Requester's phone").'</label>
 					<br />
 					<input type="tel" value="" tabindex="0" size="16" name="requesterPhone_custompost" id="requesterPhone_custompost" aria-required="true" required/>
 				</p>
 				<p>
-					<label for="requesterEmail_custompost">'.esc_html__('Courriel du demandeur').'</label>
+					<label for="post_image">
+						'.esc_html__("Upload a picture").'
+					</label>
 					<br />
-					<input type="email" value="" tabindex="0" size="16" name="requesterEmail_custompost" id="requesterEmail_custompost" aria-required="true" required/>
+					<input type="file" name="post_image" id="post_image" aria-required="true" required>
 				</p>
 
 				<p>
@@ -165,6 +192,11 @@ function send_mail($post,$post_id) {
     $message .="<br><b>Nom du défunt</b>:       {$postCustomFields['name_custompost']}";
     $message .="<br><b>Nom du demandeur</b>: {$postCustomFields['requesterName_custompost']}";
     $message .="<br><b>Téléphone</b>:        {$postCustomFields['requesterPhone_custompost']}";
+    $message .="<br><b>Courriel</b>:         {$postCustomFields['requesterEmail_custompost']}";
+    
+    $message .="<br><b>Adresse du demandeur</b>:         {$postCustomFields['requesterEmail_custompost']}";
+    $message .="<br><b>Ville du demandeur</b>:         {$postCustomFields['requesterEmail_custompost']}";
+    $message .="<br><b>Courriel</b>:         {$postCustomFields['requesterEmail_custompost']}";
     $message .="<br><b>Courriel</b>:         {$postCustomFields['requesterEmail_custompost']}";
     $message .= "<br><br><div><!--[if mso]> <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{$urlPost}' style='height:38px;v-text-anchor:middle;width:200px;' arcsize='11%' strokecolor='#28501e' fillcolor='#92b441'> <w:anchorlock/> <center style='color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;'>Voir le contenu</center></v:roundrect><![endif]--><a href='{$urlPost}' style='background-color:#92b441;border:1px solid #28501e;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:38px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;'>Voir le contenu</a></div>";
     $to = $adminEmail;
