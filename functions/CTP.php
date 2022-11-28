@@ -106,3 +106,8 @@ function create_slug_from_name($name)
     $name = str_replace(" ","-",$name);
     return $name;
 }
+
+function load_plugin_textdomain() {
+    load_plugin_textdomain( 'custompost', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+}
+  

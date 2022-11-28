@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-28 01:02+0000\n"
+"PO-Revision-Date: 2022-11-28 01:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr-CA\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Loco-Source-Locale: fr_CA\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco https://localise.biz/"
+
+msgid "Name of the deceased"
+msgstr "Nom du défunt"
+
+msgid "Name of requester"
+msgstr "Nom du demandeur"
+
+msgid "Requester's email"
+msgstr "Courriel du demandeur"
+
+msgid "Requester's address"
+msgstr "Adresse du demandeur"
+
+msgid "Requester's city"
+msgstr "Ville du demandeur"
+
+msgid "Requester's postal code"
+msgstr "Code postal du demandeur"
+
+msgid "Province, state, country of requester"
+msgstr "Province, état, pays du demandeur"
+
+msgid "Requester's phone"
+msgstr "Téléphone du demandeur"
+
+msgid "Upload a picture"
+msgstr "Télécharger une photo"
