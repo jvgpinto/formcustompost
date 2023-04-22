@@ -158,15 +158,15 @@ function set_my_mail_content_type() {
 
 function send_mail($post,$post_id) {
     $adminEmail = get_option( 'custompost_field_approver_email' );
-    $subject = "Contenu en attends de l'approbation";
+    $subject = "Nouveau contenu soumis en attente d'approbation.";
     $urlPost = get_edit_post_link($post_id);
-    $message = '<h1>Voici les informations soumis: </h1><br>';
+    $message = '<h1>Voici les informations: </h1><br>';
     $postCustomFields = $post['meta_input'];
-    $message .="<br><b>Nom défunt</b>:       {$postCustomFields['name_custompost']}";
+    $message .="<br><b>Nom du défunt</b>:       {$postCustomFields['name_custompost']}";
     $message .="<br><b>Nom du demandeur</b>: {$postCustomFields['requesterName_custompost']}";
     $message .="<br><b>Téléphone</b>:        {$postCustomFields['requesterPhone_custompost']}";
     $message .="<br><b>Courriel</b>:         {$postCustomFields['requesterEmail_custompost']}";
-    $message .= "<br><br><div><!--[if mso]> <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{$urlPost}' style='height:38px;v-text-anchor:middle;width:200px;' arcsize='11%' strokecolor='#28501e' fillcolor='#92b441'> <w:anchorlock/> <center style='color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;'>Approuver!</center></v:roundrect><![endif]--><a href='{$urlPost}' style='background-color:#92b441;border:1px solid #28501e;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:38px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;'>Approuver!</a></div>";
+    $message .= "<br><br><div><!--[if mso]> <v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='{$urlPost}' style='height:38px;v-text-anchor:middle;width:200px;' arcsize='11%' strokecolor='#28501e' fillcolor='#92b441'> <w:anchorlock/> <center style='color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;'>Voir le contenu</center></v:roundrect><![endif]--><a href='{$urlPost}' style='background-color:#92b441;border:1px solid #28501e;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:38px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;'>Voir le contenu</a></div>";
     $to = $adminEmail;
     $subject = $subject;
     $headers = array('Content-Type: text/html; charset=UTF-8');
