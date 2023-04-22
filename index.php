@@ -4,7 +4,7 @@
  * Plugin Name:       Form custom post
  * Plugin URI:        https://github.com/jvgpinto/formcustompost
  * Description:       Create a custom post type with a form that can create a post from the front-end and send an email to a designed approver.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 4.1.5
  * Requires PHP:      5.4.45
  * Author:            Joao Pinto
@@ -42,3 +42,10 @@ include('functions/filters.php');
 add_filter( 'wpcf7_form_elements', 'do_shortcode' );
 add_filter( 'the_title', 'filter_title_custompost',10,2);
 add_filter( 'the_content', 'filter_content_custompost');
+
+
+//TEMP-Resolve permalink problems on plugin install.
+add_action( 'init', function() {
+    global $wp_rewrite;
+    $wp_rewrite->set_permalink_structure( $wp_rewrite->$permalink_structure );
+} );
